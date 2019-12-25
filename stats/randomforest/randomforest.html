@@ -1,0 +1,138 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>### RANDOM FOREST ###</title>
+	<link rel="stylesheet" type="text/css" href="randomforest_style.css">
+</head>
+<body>
+
+
+
+
+<h1>### RANDOM FOREST ###</h1>>
+<h2># TERMINOLOGY #</h2> 
+
+
+<table style="border: 1px solid black;">
+	
+
+	<tr>
+		<td>"root node", "node" - Very top of tree is called root node or root, the remainder nodes are called nodes.</td> 
+	</tr>
+
+	<tr><td>"internal nodes"    -  have arrows pointing to them, and the</td> </tr>
+
+	<tr><td>"leaf nodes"        -  do not have arrows pointing away from them.</td> </tr>
+
+	<tr><td>"impure nodes"      - impure leaf nodes means that that it doesnt represent 100% of the pop that hamnar där.</td></tr>
+
+	<tr><td>"Bootstrapping"     - a bootstrapped dataset is a dataset, that is the same size as the original, but the SAMPLES are RANDOMLY SELECTED. The rule is that we can SELECT THE SAME SAMPLE MORE THAN ONCE! Typically, 1/3 of the original data does not end up in the bootstrapped dataset</td></tr>
+
+	<tr><td>"Gini"              - a measure of impurity</td></tr>
+	<tr><td>"Decision tree"     - think of the heart failure selection of therapies tree</td>></tr>
+	<tr><td>"bagging"           - Bootstrapping first, then AGGregate the outcomes of each tree to make a decision </td>> </tr>
+
+	<tr> <td>"out-of-bag dataset"  - part of the original data that was not included in the bootstrapped dataset</td> </tr>
+
+	<tr> <td>"out-of-bag error"  - the error we get, when we test our randomforest with our out-of-bag dataset</td> </tr>
+
+</table>
+
+<p>
+	# To understand #
+	Have a raw table of data of given columns and known outcomes for each row.   
+</p>
+<p>
+	Bootstrap that data to create a new table of same size
+</p>
+
+<p>
+From the new table, u want to create a decision tree
+</p>
+
+<p>
+	For the creation of the decision tree, we will take a random SUBSET of variables (i.e. columns of the dataset) (in the video he explains that he only takes 2 variables from the 4, I do not know for certain if it needs to be a random number of variables, or a subset at all; seemingly there is a method to the selection of variables, and it seems to be a subset indeed). 
+</p>
+
+<p>
+	Once the variables are selected, we can choose one of them that is going to be the node at that point. (I believe the selection of which variable is supposed to be the node is based on its gini impurity score, the the best score will render that variable selected in that node) 
+</p>
+<p>
+	If we chose one of the nodes, we will not be able to use it again, so it will not be used in the following variable selection process for the subsequent nodes. 
+</p>
+
+<p>
+The edges from the internal nodes will be, for matters of simplicity, going to be the value and the complement of it (e.g. one node is good blood circulation, 100 are yes, 20 are no, so for the yes edge 100 will move on to that side of the tree, and for the no edge 20 will move on to the other side of the tree, etc). 
+</p>
+
+<p>
+	Because we introduced "randomness" in our selection of variables for our trees, we can create many different trees. Therefore we continue by creating lots of different trees, creating a forest.
+</p>
+
+<p>
+	To now use this fores, we introduce a new sample dataset, where we do not know the outcome (for instance if our trees are supposed to predict heart disease based on different variable parameters, columns, we introduce a dataset where we do not know if the participants do in fact have heart disease, but the parameters were measured).
+</p>
+
+<p>
+	Now to predict the outcome, we will take each data row, parse it through all of the trees, and record the outcome of each tree. We will then get a ratio of outcomes, where the stronger quotient will give the prediction of our random forest, for the given dataset. 
+</p>
+<p>
+	REMEMBER! thus far we created a random forest out of ONE bootstrapped dataset. 
+</p>
+
+<p>
+	the out-of-bag dataset can be used for quality control of our classifying randomforest. Because we know the outcomes of our out-of-bag dataset, we can run it through the randomforest and measure how it would label the data. 
+</p>
+
+<p>
+	using the out-of-bag error rates, we can create more randomforests where we have changed different parameters, for instance how many variables are to be included in each subset, when creating the nodes, etc. 
+</p>
+
+<p>
+	Calc gini impurity: 
+	1 - probability(yes)² - probabitrty(no)² = gini impurity for given node
+</p>
+<p>
+	prob(yes) = number(yes)/total amount on that node
+</p>
+<p>
+	How many patients are represented in each leaf node. total gini impurity is the weighted average of leaf node impurities. 
+</p>
+<p>
+	For weighted average = take total number of people in one leaf node / total on all leaf nodes.
+</p>
+<p>
+
+	The lowest value of gini quotient is the purest. the lowest gini quoficient will be used as the root node. 
+</p>
+<p>
+	After creating the root node, u want to continue to the other nodes. from the root nodes u will get yes or no. note that these groups of yes and no will not be pure, i.e. it is possible to have both outcomes in each of them.
+</p>
+<p>
+	Now after doing the yes and no separation, we would trke to recalucate the gini coefficients for the subgroups that we have created (note therefore that we will perform the gini calculations for each node, or column, on that subgroup in the given node even if it contains both outcomes). the node with the lowest coefficent will be used to separate next. 
+</p>
+</p>
+
+
+<h3>Filling in missing values</h3>
+<p>We can have datasets with some values missing. We can use a randomforest to predict what the likely missing values could have been. </p>
+
+<p>To do this, we create an optimization algorithm. First we can select the most frequently appearing values for each missing values. We than create a "proximiyu matrix", a two-dimensional matrix, where each cell represents whether or not two different rows ended up in the same node when parsed through each trees, (its a ratio, if there are 100 trees, and two different data entries ended up in the same node 20/100 trees, then their proximity has the value of 0.2 in that cell, where the closer the value to 1 the closer the two datapoints are to each other)</p>
+
+<p>We will parse through the rows with the filled in values also through the trees, to be included in the proximity matrix</p>
+
+<p>The values from the proximity matrix will then be used to evaluate the accuracy of the filled in values, by using them as weights:</p>
+<p>for each column of the entire dataset, we identify the quotients for each answer. (e.g. if there were 2 rows with yes, and three with no for the same column, excluding the one where we filled in the values)</p>
+<p>we then identify the "weight" of each answer in the column = (proximity of answer) / (proximity of all answers) = (e.g. 3 rows had no, we look up intersection of those three rows with the one we filled our value in, add those proximities together) / (add all proximities that are found in the intersection of the missing data row with the complete datapoints)</p>
+
+<p>weight x quotient for the answer = weighted frequency for given answer, if it is good, we will change the filled in missing value to this one</p>
+
+<h4> <i>heat maps, and MDS graphs</i> </h4>
+<p>The proximty matrix can be used to create a heat map, representing the proximity of each sample with each other, and an MDS plot which indicates the same</p>
+
+<h4><i>Second method for filling in missing values</i></h4>
+<p>The rows with the missing data, we can create different permutations of them with the all the different outcomes (heart failure: yes and no), and possible values that the missing values can have (e.g. blocked arteries yes and np). We then parse through these datapoints through the forest, to see how many times the outcome we put in will be predicted for the given missing value. The filled in values, that produces the most appearances and outcomes that matches the one we selected (e.g. we parse it through the forest, and in 20/100 trees, the outcome yes came up, which matches the yes we put in for the dataset, whereas no came up 80/100, wich DOES NOT match the outcome we gave), and we select the one where the outcome matches the one we chose for the given missing values the most times</p>
+
+</body>
+</html>
