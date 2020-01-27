@@ -54,6 +54,14 @@ int main(int argc, char const *argv[])
 		} 
 	}
 
+	// in the book, they discuss LOOP INVARINTS
+	// which is defined as a statement (or condition)
+	// that remains true for each iteration of the loop
+	// for instance, in the loop above a (weak) loop
+	// invariant is that j >= 0 always, for any 
+	// iteration of the loop (one can find other
+	// more complicated invariants also, ofcourse). 
+
 	// what we can see here is that when
 	// we pass the list not in the form
 	// of a pointer, but as the list in 
