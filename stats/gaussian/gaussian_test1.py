@@ -4,7 +4,7 @@ import math
 import matplotlib.pyplot as plt
 
 ## variable
-savetofolder = "/home/ali/Documents/prwork/mathematics"
+savetofolder = "/home/ali/Documents/prwork/mathematics/"
 savetofile   = "gaussian_quadratic1.png"
 
 
@@ -35,7 +35,7 @@ def generate_values(func,
     plt.plot(x,y)
     plt.xlabel(label)
     plt.show()
-    plt.savefig(f"{savetofolder}/{savetofile}")
+    plt.savefig(f"{savetofolder}{savetofile}")
 
 
 
